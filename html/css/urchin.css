@@ -154,11 +154,15 @@ body {
 	padding: 12px 0
     }
 }
+a.navbar-brand img {
+    width: 50%;
+}
+
 
 header.masthead {
     text-align: center;
     color: #fff;
-    background-image: url(../img/urchin_banner.png);
+    background-image: url(../img/proj_urchin.jpg);
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-position: center center;
