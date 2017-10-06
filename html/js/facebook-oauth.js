@@ -50,7 +50,7 @@ function appendToHtml (name, imageUrl) {
     '<i class="fa fa-plus fa-3x"></i>',
     '</div>',
     '</div>',
-    '<img class="img-fluid" src=' + imageUrl + 'alt="">',
+    '<img class="img-fluid" src="' + imageUrl + '">',
     '</a>',
     '<div class="portfolio-caption">',
     '<h4>' + name + '</h4>',
@@ -62,9 +62,7 @@ function appendToHtml (name, imageUrl) {
 
 function parseMusicImages (artistNames) {
   for (let property in artistNames) {
-    if (object.hasOwnProperty(property)) {
-      appendToHtml(property, artistNames[property]);
-    }
+    appendToHtml(property, artistNames[property]);
   }
 }
 
@@ -75,7 +73,7 @@ function getMusic () {
       musicList.push(response['data'][i]['name']);
     }
     let artistNames = getitunesArtistImages(musicList);
-    parseMusicImages(artistNames);
+    //parseMusicImages(artistNames);
   });
 }
 function Logout () {
@@ -113,7 +111,7 @@ function getitunesArtistImages (artistNames) {
 }
 function getId (name) {
   $.ajax({
-    async: false, 
+    async: false,
     url: 'https://itunes.apple.com/search\?term\=' + name,
     type: 'GET',
     contentType: 'application/json',
@@ -134,13 +132,14 @@ function getImage (artist, artistId) {
   console.log(artist);
   console.log(artistId);
   $.ajax({
-    async: false, 
+    async: false,
     url:  'https://itunes.apple.com/ca/artist/' + artistId,
     type: 'GET',
     success: function (res) {
-       const regex = 'meta property=';
-       imgURL = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
-       imgDict[name] = imgURL;
+      const regex = 'meta property=';
+      imgURL = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
+      appendToHtml(name, imgURL);
+      imgDict[name] = imgURL;
     },
     error: function (res) {
         imgDict[name] = "http://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
