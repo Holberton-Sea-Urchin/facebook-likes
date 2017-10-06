@@ -6,16 +6,47 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- CHANNEL FILE -->
+    <script src="//connect.facebook.net/en_US/all.js"></script>
     <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    
+    <script type="text/javascript" src="js/facebook-oath"></script>
+
+
+    <!-- OAUTH LOGIN -->
+    <script>
+      window.fbAsyncInit = function() {
+      FB.init({
+      appId      : '1549498955130522',
+      channelUrl : 'https://urchin.holberton.us/',
+      status     : true, // check login status
+      cookie     : true,
+      xfbml      : true
+      });
+      FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <script>
+      FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+      });
+    </script>
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 </head>
 
 <body>
-    
+
     <div class="container">
         <nav class="navbar navbar-default" role="navigation">
           <div class="container-fluid">
