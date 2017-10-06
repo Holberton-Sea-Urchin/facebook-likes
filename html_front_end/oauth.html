@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CHANNEL FILE -->
+    <script src="//connect.facebook.net/en_US/all.js"></script>
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/facebook-oath"></script>
+
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="fb-root"></div>
+  <script>
+    window.fbAsyncInit = function() {
+    FB.init({
+    appId      : '1549498955130522',
+    channelUrl : 'https://urchin.holberton.us/',
+    status     : true, // check login status
+    cookie     : true,
+    xfbml      : true
+    });
+
+    FB.Event.subscribe('auth.authResponseChange', function(response)
+    {
+    if (response.status === 'connected')
+    {
+    document.getElementById("message").innerHTML +=  "<br>Connected to Facebook";
+    //SUCCESS
+
+    }
+    else if (response.status === 'not_authorized')
+    {
+    document.getElementById("message").innerHTML +=  "<br>Failed to Connect";
+
+    //FAILED
+    } else
+    {
+    document.getElementById("message").innerHTML +=  "<br>Logged Out";
+
+    //UNKNOWN ERROR
+    }
+    });
+
+    };
+
+    function Login()
+    {
+
+    FB.login(function(response) {
+    if (response.authResponse) 
+    {
+    getUserInfo();
+    } else 
+    {
+    console.log('User cancelled login or did not fully authorize.');
+    }
+    },{scope: 'email,user_photos,user_videos'});
+    
+    }
+    
+    function getUserInfo() {
+    FB.api('/me', function(response) {
+    
+    var str="<b>Name</b> : "+response.name+"<br>";
+    str +="<b>Link: </b>"+response.link+"<br>";
+    str +="<b>Username:</b> "+response.username+"<br>";
+    str +="<b>id: </b>"+response.id+"<br>";
+    str +="<b>Email:</b> "+response.email+"<br>";
+    str +="<input type='button' value='Get Photo' onclick='getPhoto();'/>";
+    str +="<input type='button' value='Logout' onclick='Logout();'/>";
+    document.getElementById("status").innerHTML=str;
+    
+    });
+    }
+    function getPhoto()
+    {
+    FB.api('/me/picture?type=normal', function(response) {
+    
+    var str="<br/><b>Pic</b> : <img src='"+response.data.url+"'/>";
+    document.getElementById("status").innerHTML+=str;
+    
+    });
+    
+    }
+    function Logout()
+    {
+    FB.logout(function(){document.location.reload();});
+    }
+    
+    // Load the SDK asynchronously
+    (function(d){
+    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    ref.parentNode.insertBefore(js, ref);
+    }(document));
+    
+  </script>
+  <div align="center">
+    <h2>Facebook OAuth Javascript Demo</h2>
+    
+    <div id="status">
+      Click on Below Image to start the demo: <br/>
+      <img src="http://hayageek.com/examples/oauth/facebook/oauth-javascript/LoginWithFacebook.png" style="cursor:pointer;" onclick="Login()"/>
+    </div>
+    
+    <br/><br/><br/><br/><br/>
+    
+    <div id="message">
+      Logs:<br/>
+    </div>
+    
+  </div>
+
+    <div class="container">
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">@Company</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li><a href="#">About</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div class="jumbotron">
+            <h1 class="text-left">Login</h1>
+            <p class="text-left">Chose the account you wish to login with.</p>
+            <p>
+                <a class="btn btn-facebook-style btn-lg btn-block" href="auth/facebook">
+                    <i class="fa fa-facebook-square"></i>  <span>Login with <strong>Facebook</strong></span>
+                </a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>© Company 2014</p>
+        </div>
+    </div>
+</body>
+
+</html>
