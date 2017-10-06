@@ -25,7 +25,7 @@ server {
 	server_name urchin.holberton.us;
 
 	location / {
-		index login.html 
+		index index.html 
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
 		try_files $uri $uri/ =404;
