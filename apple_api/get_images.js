@@ -24,7 +24,13 @@ function getId (name) {
     contentType: 'application/json',
     dataType: 'json',
     success: function (res) {
-      retDict[name] = res.results[0].artistId;
+        if (res.results[0])
+            retDict[name] = res.results[0].artistId;
+        else
+            retDict[name] = "Image not available"
+    },
+    error: function (res) {
+      retDict[name] = "Image not available"
     }
   });
 }
@@ -40,10 +46,9 @@ function getImage (artist, artistId) {
        const regex = 'meta property=';
        imgURL = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
        imgDict[name] = imgURL;
-       
     },
     error: function (res) {
-      console.log('ERROR!!!!');
+        imgDict[name] = "http://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
     }
   });
 }
