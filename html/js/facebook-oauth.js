@@ -47,10 +47,6 @@ function getUserInfo() {
   FB.api('/me', function(response) {
 
     var str="<b>Name</b> : "+response.name+"<br>";
-    //str +="<b>Link: </b>"+response.link+"<br>";
-    //str +="<b>Username:</b> "+response.username+"<br>";
-    //str +="<b>id: </b>"+response.id+"<br>";
-    //str +="<b>Email:</b> "+response.email+"<br>";
     str +="<input type='button' value='Get Music' onclick='getMusic();'/>";
     str +="<input type='button' value='Logout' onclick='Logout();'/>";
     document.getElementById("status").innerHTML=str;
@@ -65,9 +61,7 @@ function getMusic()
     for (let i = 0; i < response['data'].length; i++) {
       musicList.push(response['data'][i]['name']);
     }
-    console.log(musicList);
     let artistNames = getitunesArtistImages(musicList);
-    console.log(artistNames);
 
   });
 
@@ -104,7 +98,6 @@ function getitunesArtistImages (artistNames) {
   for (name in retDict) {
     getImage(name, retDict[name]);
   }
-  console.log(imgDict);
   return imgDict;
 }
 function getId (name) {
@@ -121,8 +114,6 @@ function getId (name) {
 }
 
 function getImage (artist, artistId) {
-  console.log(artist);
-  console.log(artistId);
   $.ajax({
     async: false,
     url:  'https://itunes.apple.com/ca/artist/' + artistId,
