@@ -164,10 +164,12 @@ function getId (name) {
     contentType: 'application/json',
     dataType: 'json',
     success: function (res) {
-      if (res.results[0])
+      if (res.results[0]) {
         retDict[name] = res.results[0].artistId;
-      else
-        retDict[name] = "Image not available"
+      }
+      else {
+        retDict[name] = "Image not available";
+      }
     },
     error: function (res) {
       console.log(res);
