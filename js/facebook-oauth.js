@@ -186,13 +186,21 @@ function getImage (artist, artistId) {
     type: 'GET',
     success: function (res) {
       let imageUrl = '';
-      try {
-        imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
-      } catch (error) {
-        imageURL = 'https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528';
+      if res.includes('og:image') {
+        try {
+          const matches = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">');
+          if (matches) {
+            imageUrl = matches[1];
+          } else {
+            imageUrl = 'https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528';
+          }
+//        imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
+        } catch (error) {
+          imageURL = 'https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528';
+        }
+        appendToHtml(artist, imageUrl);
+        imgDict[artist] = imageUrl;
       }
-      appendToHtml(artist, imageUrl);
-      imgDict[artist] = imageUrl;
     },
     error: function (res) {
       console.log(res);
