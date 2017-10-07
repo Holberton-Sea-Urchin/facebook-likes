@@ -4,8 +4,8 @@ Display authenticated user's facebook likes
 
 # Demo
 
-Short: https://goo.gl/LR5TzH
-Github Pages: https://holberton-sea-urchin.github.io/facebook-likes/
+* goo.gl: https://goo.gl/LR5TzH
+* Github Pages: https://holberton-sea-urchin.github.io/facebook-likes/
 
 # Authors
 * Jared Heck, [jarehec](https://github.com/jarehec) | [@jarehec](https://twitter.com/jarehec)
