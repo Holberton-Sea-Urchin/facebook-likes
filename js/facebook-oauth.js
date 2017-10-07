@@ -186,7 +186,7 @@ function getImage (artist, artistId) {
     type: 'GET',
     success: function (res) {
       let imageUrl = '';
-      if res.includes('og:image') {
+      if (res.includes('og:image')) {
         try {
           const matches = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">');
           if (matches) {
