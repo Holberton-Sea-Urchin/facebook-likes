@@ -147,6 +147,7 @@ function Logout () {
 // APPLE API CHANGES
 
 function getitunesArtistImages (artistNames) {
+  
   for (let i=0; i < artistNames.length; i++) {
     const name = artistNames[i];
     getId(name);
@@ -184,8 +185,12 @@ function getImage (artist, artistId) {
     url:  'https://itunes.apple.com/ca/artist/' + artistId,
     type: 'GET',
     success: function (res) {
-      const regex = 'meta property=';
-      let imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
+      let imageUrl = '';
+      try {
+        imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
+      } catch (error) {
+        imageURL = 'https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528';
+      }
       appendToHtml(artist, imageUrl);
       imgDict[artist] = imageUrl;
     },
