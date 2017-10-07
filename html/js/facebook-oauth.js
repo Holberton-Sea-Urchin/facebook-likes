@@ -1,3 +1,11 @@
+// APPLE API CHANGES
+
+const retDict = {};
+const artistBase = 'https://itunes.apple.com/ca/artist/';
+const imgDict = {};
+const nowTime = new Date();
+const index = {'count': 0};
+
 window.fbAsyncInit = function () {
   FB.init({
     appId: '1549498955130522',
@@ -42,9 +50,11 @@ function getUserInfo () {
 }
 
 function appendToHtml (name, imageUrl) {
+    let idx = index['count'];
+    let portfolioModal = 'portfolioModal' + idx;
   let structure = [
     '<div class="col-md-4 col-sm-6 portfolio-item">',
-    '<a class="portfolio-link" data-toggle="modal" href="#portfolioModal1">',
+    '<a class="portfolio-link" data-toggle="modal" href="#' + portfolioModal + '">',
     '<div class="portfolio-hover">',
     '<div class="portfolio-hover-content">',
     '<i class="fa fa-plus fa-3x"></i>',
@@ -57,7 +67,42 @@ function appendToHtml (name, imageUrl) {
     '</div>',
     '</div>'
   ];
-  $(structure.join('')).appendTo($('.album_images'));
+
+    let modal = [
+	'<div class="portfolio-modal modal fade" id="' + portfolioModal + '" tabindex="-1" role="dialog" aria-hidden="true">',
+	'<div class="modal-dialog">',
+	'<div class="modal-content">',
+	'<div class="close-modal" data-dismiss="modal">',
+	'<div class="lr">',
+	'<div class="rl"></div>',
+	'</div>',
+	'</div>',
+	'<div class="container">',
+	'<div class="row">',
+	'<div class="col-lg-8 mx-auto">',
+	'<div class="modal-body">',
+	'<!-- Project Details Go Here -->',
+	'<h2>' + name + '</h2>',
+	'<p class="item-intro text-muted">Very Cool Artist.</p>',
+	'<img class="img-fluid d-block mx-auto" src="' + imageUrl + '">',
+	'<p>Artist Details: Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>',
+	'<ul class="list-inline">',
+	'<li>Time:' + nowTime + '</li>',
+	'</ul>',
+	'<button class="btn btn-primary" data-dismiss="modal" type="button">',
+	'<i class="fa fa-times"></i>',
+	'Close Project</button>',
+	'</div>',
+	'</div>',
+	'</div>',
+	'</div>',
+	'</div>',
+	'</div>',
+	'</div>',
+    ];
+    $(structure.join('')).appendTo($('.album_images'));
+    $(modal.join('')).insertAfter($('.footer_modals'));
+    index['count']++;
 }
 
 function parseMusicImages (artistNames) {
@@ -91,22 +136,14 @@ function Logout () {
 
 // APPLE API CHANGES
 
-// artistNames = ['Jack Johnson', 'Cold play', 'Taylor Swift']
-retDict = {};
-artistBase = 'https://itunes.apple.com/ca/artist/';
-imgDict = {};
-
-// getitunesArtistImages(['Taylor Swift', 'Green Day', 'Michael Jackson']);
 function getitunesArtistImages (artistNames) {
   for (let i=0; i < artistNames.length; i++) {
     const name = artistNames[i];
     getId(name);
   }
-
-  for (name in retDict) {
-    getImage(name, retDict[name]);
-  }
-  console.log(imgDict);
+    for (name in retDict) {
+	getImage(name, retDict[name]);
+    }
   return imgDict;
 }
 function getId (name) {
@@ -116,33 +153,35 @@ function getId (name) {
     type: 'GET',
     contentType: 'application/json',
     dataType: 'json',
-    success: function (res) {
+      success: function (res) {
         if (res.results[0])
             retDict[name] = res.results[0].artistId;
         else
             retDict[name] = "Image not available"
     },
-    error: function (res) {
+      error: function (res) {
+	  console.log(res);
       retDict[name] = "Image not available"
     }
   });
 }
 
 function getImage (artist, artistId) {
-  console.log(artist);
-  console.log(artistId);
   $.ajax({
     async: false,
     url:  'https://itunes.apple.com/ca/artist/' + artistId,
-    type: 'GET',
+      type: 'GET',
     success: function (res) {
       const regex = 'meta property=';
-      imgURL = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
-      appendToHtml(name, imgURL);
-      imgDict[name] = imgURL;
+      let imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
+      appendToHtml(artist, imageUrl);
+      imgDict[artist] = imageUrl;
     },
-    error: function (res) {
-        imgDict[name] = "http://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
+      error: function (res) {
+	  console.log(res);
+        let imageUrl = "https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
+	  appendToHtml(artist, imageUrl);
+	  imgDict[artist] = imageUrl;
     }
   });
 }
