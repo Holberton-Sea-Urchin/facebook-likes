@@ -1,34 +1,30 @@
-// APPLE API CHANGES
-
+// Constsants
 const retDict = {};
 const artistBase = 'https://itunes.apple.com/ca/artist/';
 const imgDict = {};
 const nowTime = new Date();
+
+// used for syncing modals with images
 const index = {'count': 0};
 
 window.fbAsyncInit = function () {
   FB.init({
-    appId: '1549498955130522',
+    appId: '1549498955130522', // our FB app
     channelUrl: 'https://urchin.holberton.us/',
     status: true, // check login status
     cookie: true,
     xfbml: true
   });
 
-  FB.Event.subscribe('auth.authResponseChange', function (response)		     {
-		       if (response.status === 'connected')		       {
-			 document.getElementById('message').innerHTML += '<br>Connected to Facebook';
-			 // SUCCESS
-		       }		       else if (response.status === 'not_authorized')		       {
-			 document.getElementById('message').innerHTML += '<br>Failed to Connect';
-
-			 // FAILED
-		       } else		       {
-			 document.getElementById('message').innerHTML += '<br>Logged Out';
-
-			 // UNKNOWN ERROR
-		       }
-		     });
+  FB.Event.subscribe('auth.authResponseChange', function (response) {
+    if (response.status === 'connected') {
+      document.getElementById('message').innerHTML = '<br>Connected to Facebook';
+    } else if (response.status === 'not_authorized') {
+      document.getElementById('message').innerHTML = '<br>Failed to Connect';
+    } else {
+      document.getElementById('message').innerHTML = '<br>Logged Out';
+    }
+  });
 };
 
 function Login () {
@@ -42,17 +38,29 @@ function Login () {
 }
 function getUserInfo () {
   FB.api('/me', function (response) {
-    var str = '<b>Name</b> : ' + response.name + '<br>';
-    str += "<input type='button' value='Get Music' onclick='getMusic();'/>";
-    str += "<input type='button' value='Logout' onclick='Logout();'/>";
-    document.getElementById('status').innerHTML = str;
+    let userBar = [
+      '<b>Name</b> : ' + response.name + '<br>',
+      '<b>id: </b>' + response.id + '<br>',
+      '<input type="button" value="Get Photo" onclick="getPhoto();"/>',
+      '<input type="button" value="Get Music" onclick="getMusic();"/>',
+      '<input type="button" value="Logout" onclick="Logout();"/>',
+      '<div id="fb_profile_image"></div>'
+    ];
+    document.getElementById('status').innerHTML = userBar.join('');
+  });
+}
+
+function getPhoto() {
+  FB.api('/me/picture?type=normal', function(response) {
+    var str="<br/><b>Pic</b> : <img src='" + response.data.url + "'/>";
+    document.getElementById("fb_profile_image").innerHTML = str;
   });
 }
 
 function appendToHtml (name, imageUrl) {
-    let idx = index['count'];
-    let portfolioModal = 'portfolioModal' + idx;
-  let structure = [
+  let idx = index['count'];
+  let portfolioModal = 'portfolioModal' + idx;
+  let imageFrame = [
     '<div class="col-md-4 col-sm-6 portfolio-item">',
     '<a class="portfolio-link" data-toggle="modal" href="#' + portfolioModal + '">',
     '<div class="portfolio-hover">',
@@ -68,41 +76,42 @@ function appendToHtml (name, imageUrl) {
     '</div>'
   ];
 
-    let modal = [
-	'<div class="portfolio-modal modal fade" id="' + portfolioModal + '" tabindex="-1" role="dialog" aria-hidden="true">',
-	'<div class="modal-dialog">',
-	'<div class="modal-content">',
-	'<div class="close-modal" data-dismiss="modal">',
-	'<div class="lr">',
-	'<div class="rl"></div>',
-	'</div>',
-	'</div>',
-	'<div class="container">',
-	'<div class="row">',
-	'<div class="col-lg-8 mx-auto">',
-	'<div class="modal-body">',
-	'<!-- Project Details Go Here -->',
-	'<h2>' + name + '</h2>',
-	'<p class="item-intro text-muted">Very Cool Artist.</p>',
-	'<img class="img-fluid d-block mx-auto" src="' + imageUrl + '">',
-	'<p>Artist Details: Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>',
-	'<ul class="list-inline">',
-	'<li>Time:' + nowTime + '</li>',
-	'</ul>',
-	'<button class="btn btn-primary" data-dismiss="modal" type="button">',
-	'<i class="fa fa-times"></i>',
-	'Close Project</button>',
-	'</div>',
-	'</div>',
-	'</div>',
-	'</div>',
-	'</div>',
-	'</div>',
-	'</div>',
-    ];
-    $(structure.join('')).appendTo($('.album_images'));
-    $(modal.join('')).insertAfter($('.footer_modals'));
-    index['count']++;
+  let modalFrame = [
+    '<div class="portfolio-modal modal fade" id="' + portfolioModal + '" tabindex="-1" role="dialog" aria-hidden="true">',
+    '<div class="modal-dialog">',
+    '<div class="modal-content">',
+    '<div class="close-modal" data-dismiss="modal">',
+    '<div class="lr">',
+    '<div class="rl"></div>',
+    '</div>',
+    '</div>',
+    '<div class="container">',
+    '<div class="row">',
+    '<div class="col-lg-8 mx-auto">',
+    '<div class="modal-body">',
+    '<!-- Project Details Go Here -->',
+    '<h2>' + name + '</h2>',
+    '<p class="item-intro text-muted">Very Cool Artist.</p>',
+    '<img class="img-fluid d-block mx-auto" src="' + imageUrl + '">',
+    '<p>Artist Details: Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>',
+    '<ul class="list-inline">',
+    '<li>Time: ' + nowTime + '</li>',
+    '</ul>',
+    '<button class="btn btn-primary" data-dismiss="modal" type="button">',
+    '<i class="fa fa-times"></i>',
+    'Close Project</button>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>',
+    '</div>',
+  ];
+
+  $(imageFrame.join('')).appendTo($('.album_images'));
+  $(modalFrame.join('')).insertAfter($('.footer_modals'));
+  index['count']++;
 }
 
 function parseMusicImages (artistNames) {
@@ -111,14 +120,15 @@ function parseMusicImages (artistNames) {
   }
 }
 
-let musicList = [];
 function getMusic () {
+  let musicList = [];
   FB.api('/me/music', function (response) {
     for (let i = 0; i < response['data'].length; i++) {
       musicList.push(response['data'][i]['name']);
     }
     let artistNames = getitunesArtistImages(musicList);
-    //parseMusicImages(artistNames);
+    // commented out so as to build list after every request
+    // parseMusicImages(artistNames);
   });
 }
 function Logout () {
@@ -141,9 +151,9 @@ function getitunesArtistImages (artistNames) {
     const name = artistNames[i];
     getId(name);
   }
-    for (name in retDict) {
-	getImage(name, retDict[name]);
-    }
+  for (name in retDict) {
+    getImage(name, retDict[name]);
+  }
   return imgDict;
 }
 function getId (name) {
@@ -153,14 +163,14 @@ function getId (name) {
     type: 'GET',
     contentType: 'application/json',
     dataType: 'json',
-      success: function (res) {
-        if (res.results[0])
-            retDict[name] = res.results[0].artistId;
-        else
-            retDict[name] = "Image not available"
+    success: function (res) {
+      if (res.results[0])
+        retDict[name] = res.results[0].artistId;
+      else
+        retDict[name] = "Image not available"
     },
-      error: function (res) {
-	  console.log(res);
+    error: function (res) {
+      console.log(res);
       retDict[name] = "Image not available"
     }
   });
@@ -170,18 +180,18 @@ function getImage (artist, artistId) {
   $.ajax({
     async: false,
     url:  'https://itunes.apple.com/ca/artist/' + artistId,
-      type: 'GET',
+    type: 'GET',
     success: function (res) {
       const regex = 'meta property=';
       let imageUrl = res.match('<meta property="og:image" content="([a-zA-Z0-9 :\/\.\-]+.jpg)" id="ember[0-9]+" class="ember-view">')[1];
       appendToHtml(artist, imageUrl);
       imgDict[artist] = imageUrl;
     },
-      error: function (res) {
-	  console.log(res);
-        let imageUrl = "https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
-	  appendToHtml(artist, imageUrl);
-	  imgDict[artist] = imageUrl;
+    error: function (res) {
+      console.log(res);
+      let imageUrl = "https://vignette3.wikia.nocookie.net/canadians-vs-vampires/images/a/a4/Not_available_icon.jpg/revision/latest?cb=20130403054528";
+      appendToHtml(artist, imageUrl);
+      imgDict[artist] = imageUrl;
     }
   });
 }
